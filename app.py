@@ -2,12 +2,21 @@ from flask import Flask, render_template, request
 from datetime import datetime
 import pandas as pd
 import pymysql
+from pm25 import get_pm25_data_from_mysql
 
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
+    datas = get_pm25_data_from_mysql()[0]
+    columns = get_pm25_data_from_mysql()[1]
+    return render_template('index.html',datas=datas,columns=columns)
+
+
+
+@app.route("/books")
+def books_price():
     books={
         1:{
         "name":"Python book",
@@ -33,7 +42,7 @@ def index():
     username = 'Harold'
     nowtime = datetime.now().strftime("%Y-%m-%d")
     print(username,nowtime)
-    return render_template('index.html',name=username,now=nowtime,books=books)
+    return render_template('books.html',name=username,now=nowtime,books=books)
 
 @app.route('/pm25-data')
 def get_pm25_data():
@@ -48,9 +57,9 @@ def get_bmi():
     weight = request.args.get('weight')
     height = request.args.get('height')
     bmi = round(eval(weight)/((eval(height)/100)**2),3)
-    return render_template('bmi.html',bmi=bmi,height=height,weight=weight)
+    return render_template('bmi.html', **locals())
 
 
 
-
-app.run(debug=True)
+if __name__=="__main__":
+    app.run(debug=True)

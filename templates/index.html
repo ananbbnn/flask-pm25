@@ -3,54 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
     <title>首頁</title>
     <style>
+        
         body{
             background-color: aquamarine; 
-        }
-        h1{
-            display: inline-block;
-        }
-        a{
-            font-size: 2rem;
-            margin-left: 50px;
+            text-align: center;
         }
     </style>
-    <link rel="stylesheet" href="templasts/css/style.css">
+    
 </head>
 <body>
-    <h1>{{name}}歡迎登入</h1>
-    <a href="pm25-data" class="white-buttons">細懸浮微粒（PM2.5）監測數據</a><br>
-    <p>目前時間:{{now}}</p>
-
-    <form action="/bmi">
-        <label for="height">身高</label>
-        <input type="number" name="height" id="height">
-        <label for="weight">體重</label>
-        <input type="number" name="weight" id="weight">
-        <button type="submit">計算</button>
-
-
-    </form>
-    <p>BMI:{{bmi}}</p>
-
-
-
-    {% if books %}
-    {%for book in books%}
-    <h1>{{books[book].name}}</h1>
-    <h3>{{books[book].price}}</h3>
-    <img src="{{books[book].image_url}}" alt=""><br>
-    {%endfor%}
-    {%else%}
-    <h1>no books</h1>
-    {%endif%}
-
-
-    
-
-    
- 
-    
+    <h1>細懸浮微粒（PM2.5）監測數據</h1>
+    <table border="1" style="margin: 5px auto; width: 80%;">
+        <thead style="background-color: greenyellow;">
+            <tr>
+                {% for i in columns %}
+                <th>{{i}}</th>
+                {%endfor%}
+            </tr>
+            <tbody style="background-color: cornsilk;">
+                {% for i in datas %}
+                    <tr>
+                        {% for j in i %}
+                        <td>{{j}}</td>
+                        {%endfor%}
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </thead>
+</table>
 </body>
 </html>

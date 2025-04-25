@@ -1,3 +1,7 @@
+body{
+  background-color: black;
+}
+
 .white-buttons button{
     align-items: center;
     background-color: #FFFFFF;
