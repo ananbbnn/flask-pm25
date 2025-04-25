@@ -7,6 +7,25 @@
 </head>
 <body>
     <h1>pm2.5</h1>
-    <span>{{info}}</span>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>site</th>
+                <th>county</th>
+                <th>pm2.5</th>
+                <th>time</th>
+                <th>thing</th>
+            </tr>
+            <tbody>
+                {% for i in info %}
+                    <tr>
+                        {% for j in i %}
+                        <td>{{j}}</td>
+                        {%endfor%}
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </thead>
+    </table>
 </body>
 </html>

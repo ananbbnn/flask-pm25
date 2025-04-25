@@ -19,8 +19,8 @@ def get_pm25_data():
     api_url = 'https://data.moenv.gov.tw/api/v2/aqx_p_02?api_key=540e2ca4-41e1-4186-8497-fdd67024ac44&limit=1000&sort=datacreationdate%20desc&format=CSV'
     df = pd.read_csv(api_url)
     df["datacreationdate"] = pd.to_datetime(df["datacreationdate"])
-    df1 = df.dropna()
-    return render_template('pm25.html',info=df1.values.tolist())
+    df1 = df.dropna().values.tolist()
+    return render_template('pm25.html',info=df1)
     
 
 
