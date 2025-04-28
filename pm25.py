@@ -17,21 +17,23 @@ def open_db():
 
 def get_pm25_data_from_mysql():
     conn = None
-    datas,columns = None,None
+    datas1,datas2,columns = None,None,None
     try:
         conn = open_db()
         cur=conn.cursor()
-        #sqlstr='select * from pm25 order by datacreationdate desc'
-        sqlstr='select * from pm25 where datacreationdate = (select MAX(datacreationdate) from pm25);'
-        cur.execute(sqlstr)
+        sqlstr1='select * from pm25 where datacreationdate = (select MAX(datacreationdate) from pm25);'
+        sqlstr2='select * from pm25 order by datacreationdate desc'
+        cur.execute(sqlstr1)
         columns = [col[0] for col in cur.description]
-        datas = cur.fetchall()
+        datas1 = cur.fetchall()
+        cur.execute(sqlstr2)
+        datas2 = cur.fetchall()
     except Exception as e: 
         print(e)
     finally:
         if conn is not None:
             conn.close()
-    return datas , columns
+    return datas1 ,datas2, columns
 
 
 if __name__=="__main__":

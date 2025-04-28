@@ -9,9 +9,10 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    datas = get_pm25_data_from_mysql()[0]
-    columns = get_pm25_data_from_mysql()[1]
-    return render_template('index.html',datas=datas,columns=columns)
+    datas1 = get_pm25_data_from_mysql()[0]
+    datas2 = get_pm25_data_from_mysql()[1]
+    columns = get_pm25_data_from_mysql()[2]
+    return render_template('index.html',datas1=datas1,datas2=datas2,columns=columns)
 
 
 

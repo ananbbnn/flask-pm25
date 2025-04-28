@@ -16,15 +16,17 @@
 </head>
 <body>
     <h1>細懸浮微粒（PM2.5）監測數據</h1>
-    <table border="1" style="margin: 5px auto; width: 80%;">
-        <thead style="background-color: greenyellow;">
+    <button id="new-data-button" type="button" >最新資料</button>
+    <button id="all-data-button" type="button">全部資料</button>
+    <table class="new-data-table" border="1" style="margin: 5px auto; width: 80%;" hidden>
+        <thead style="background-color: rgb(234, 255, 47);">
             <tr>
                 {% for i in columns %}
                 <th>{{i}}</th>
                 {%endfor%}
             </tr>
-            <tbody style="background-color: cornsilk;">
-                {% for i in datas %}
+            <tbody style="background-color: rgb(249, 255, 220);">
+                {% for i in datas1 %}
                     <tr>
                         {% for j in i %}
                         <td>{{j}}</td>
@@ -33,6 +35,62 @@
                 {%endfor%}
             </tbody>
         </thead>
-</table>
+    </table>
+
+    <table class="all-data-table" border="1" style="margin: 5px auto; width: 80%;" hidden>
+        <thead style="background-color: greenyellow;">
+            <tr>
+                {% for i in columns %}
+                <th>{{i}}</th>
+                {%endfor%}
+            </tr>
+            <tbody style="background-color: cornsilk;">
+                {% for i in datas2 %}
+                    <tr>
+                        {% for j in i %}
+                        <td>{{j}}</td>
+                        {%endfor%}
+                    </tr>
+                {%endfor%}
+            </tbody>
+        </thead>
+    </table>
+
+<script>
+    let allDataButton = document.querySelector('#all-data-button');
+    let newDataButton = document.querySelector('#new-data-button');
+    function showNewData(){
+        let allDataButton = document.querySelector('#all-data-button');
+        let newDataButton = document.querySelector('#new-data-button');
+        let ntable = document.querySelector('.new-data-table');
+        let atable = document.querySelector('.all-data-table');
+        ntable.hidden = false;
+        atable.hidden = true;
+        allDataButton.disabled = false;
+        newDataButton.disabled = true;
+    }
+    function showAllData(){
+        let allDataButton = document.querySelector('#all-data-button');
+        let newDataButton = document.querySelector('#new-data-button');
+        let ntable = document.querySelector('.new-data-table');
+        let atable = document.querySelector('.all-data-table');
+        ntable.hidden = true;
+        atable.hidden = false;
+        allDataButton.disabled = true;
+        newDataButton.disabled = false;
+    }
+    allDataButton.addEventListener('click',showAllData);
+    newDataButton.addEventListener('click',showNewData);
+
+
+
+
+
+
+
+
+
+
+</script>
 </body>
 </html>
