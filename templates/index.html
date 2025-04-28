@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <title>首頁</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <style>
         
         body{
@@ -16,8 +15,10 @@
 </head>
 <body>
     <h1>細懸浮微粒（PM2.5）監測數據</h1>
-    <button id="new-data-button" type="button" >最新資料</button>
-    <button id="all-data-button" type="button">全部資料</button>
+    <div class="white-buttons">
+        <button id="new-data-button" type="button" >最新資料</button>
+        <button id="all-data-button" type="button">全部資料</button>        
+    </div>
     <table class="new-data-table" border="1" style="margin: 5px auto; width: 80%;" hidden>
         <thead style="background-color: rgb(234, 255, 47);">
             <tr>
@@ -65,8 +66,13 @@
     function toggleTables(showNew) {
         ntable.hidden = !showNew;
         atable.hidden = showNew;
-        newDataButton.disabled = showNew;
-        allDataButton.disabled = !showNew;
+        if(showNew == true){
+            newDataButton.style.backgroundColor = 'silver';
+            allDataButton.style.backgroundColor = '#FFFFFF';
+        }else{
+            newDataButton.style.backgroundColor = '#FFFFFF';
+            allDataButton.style.backgroundColor = 'silver';
+        }
     }
 
     newDataButton.addEventListener('click', () => toggleTables(true));
