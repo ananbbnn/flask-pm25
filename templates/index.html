@@ -57,30 +57,20 @@
     </table>
 
 <script>
-    let allDataButton = document.querySelector('#all-data-button');
-    let newDataButton = document.querySelector('#new-data-button');
-    function showNewData(){
-        let allDataButton = document.querySelector('#all-data-button');
-        let newDataButton = document.querySelector('#new-data-button');
-        let ntable = document.querySelector('.new-data-table');
-        let atable = document.querySelector('.all-data-table');
-        ntable.hidden = false;
-        atable.hidden = true;
-        allDataButton.disabled = false;
-        newDataButton.disabled = true;
+    const allDataButton = document.querySelector('#all-data-button');
+    const newDataButton = document.querySelector('#new-data-button');
+    const ntable = document.querySelector('.new-data-table');
+    const atable = document.querySelector('.all-data-table');
+
+    function toggleTables(showNew) {
+        ntable.hidden = !showNew;
+        atable.hidden = showNew;
+        newDataButton.disabled = showNew;
+        allDataButton.disabled = !showNew;
     }
-    function showAllData(){
-        let allDataButton = document.querySelector('#all-data-button');
-        let newDataButton = document.querySelector('#new-data-button');
-        let ntable = document.querySelector('.new-data-table');
-        let atable = document.querySelector('.all-data-table');
-        ntable.hidden = true;
-        atable.hidden = false;
-        allDataButton.disabled = true;
-        newDataButton.disabled = false;
-    }
-    allDataButton.addEventListener('click',showAllData);
-    newDataButton.addEventListener('click',showNewData);
+
+    newDataButton.addEventListener('click', () => toggleTables(true));
+    allDataButton.addEventListener('click', () => toggleTables(false));
 
 
 
