@@ -2,19 +2,44 @@ from flask import Flask, render_template, request
 from datetime import datetime
 import pandas as pd
 import pymysql
-from pm25 import get_pm25_data_from_mysql
+import json
+from pm25 import get_pm25_data_from_mysql ,update_db
 
-
+nowtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 app = Flask(__name__)
+
+
+@app.route("/filter")
+def filter_data():
+    county = request.args.get("county")
+    return {"county": county}
 
 @app.route("/")
 def index():
-    datas1 = get_pm25_data_from_mysql()[0]
-    datas2 = get_pm25_data_from_mysql()[1]
-    columns = get_pm25_data_from_mysql()[2]
-    return render_template('index.html',datas1=datas1,datas2=datas2,columns=columns)
+    columns, datas1, datas2 = get_pm25_data_from_mysql()
+    df1 = pd.DataFrame(datas1,columns=columns)
+    counties = sorted(df1['county'].unique().tolist())
+    
+
+    x_data = df1['site'].to_list()
+    y_data = df1['pm25'].to_list()
 
 
+    return render_template('index.html',
+                           datas1=datas1,
+                           datas2=datas2,
+                           columns=columns,
+                           counties=counties,
+                           x_data=x_data,
+                           y_data=y_data
+                           )
+
+@app.route("/update-db")
+def update_pm25_db():
+    count, message = update_db()
+    result = json.dumps(
+        {'時間': nowtime,'更新比數':count,'結果':message}, ensure_ascii=False) 
+    return result
 
 @app.route("/books")
 def books_price():

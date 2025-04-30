@@ -11,25 +11,50 @@
             text-align: center;
         }
     </style>
-    
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js"></script>
 </head>
 <body>
+    <div>TEST<br>
+        <div id="main" style="width: 600px;height:400px;"></div>
+        <div id="chartData"
+            data-labels="{{x_data | tojson }}"
+            data-values="{{y_data | tojson }}"
+            >
+        </div>
+
+
+    
+    </div>
     <h1>細懸浮微粒（PM2.5）監測數據</h1>
+    <h3 id="update-time" hidden>最新更新時間:{{datas1[1][4]}}</h3>
     <div class="white-buttons">
         <button id="new-data-button" type="button" >最新資料</button>
-        <button id="all-data-button" type="button">全部資料</button>        
+        <button id="all-data-button" type="button">全部資料</button> 
+        <a href="/update-db" >
+            <button id="update-db-button" type="button" style="background-color: aqua;">更新資料</button>
+        </a>       
     </div>
+    <form action="/filter" method="GET">
+        <label for="county">選取縣市</label>
+        <select name="county" id="county">
+            {% for county in counties %}
+            <option value="{{county}}">{{county}}</option>
+            {%endfor%}
+        </select>
+        <button type="submit">submit</button>
+    </form>
+    
     <table class="new-data-table" border="1" style="margin: 5px auto; width: 80%;" hidden>
         <thead style="background-color: rgb(234, 255, 47);">
             <tr>
-                {% for i in columns %}
+                {% for i in columns[1:] %}
                 <th>{{i}}</th>
                 {%endfor%}
             </tr>
             <tbody style="background-color: rgb(249, 255, 220);">
                 {% for i in datas1 %}
                     <tr>
-                        {% for j in i %}
+                        {% for j in i[1:] %}
                         <td>{{j}}</td>
                         {%endfor%}
                     </tr>
@@ -41,14 +66,14 @@
     <table class="all-data-table" border="1" style="margin: 5px auto; width: 80%;" hidden>
         <thead style="background-color: greenyellow;">
             <tr>
-                {% for i in columns %}
+                {% for i in columns[1:] %}
                 <th>{{i}}</th>
                 {%endfor%}
             </tr>
             <tbody style="background-color: cornsilk;">
                 {% for i in datas2 %}
                     <tr>
-                        {% for j in i %}
+                        {% for j in i[1:] %}
                         <td>{{j}}</td>
                         {%endfor%}
                     </tr>
@@ -58,14 +83,27 @@
     </table>
 
 <script>
+    const chartData = document.querySelector('#chartData');
+    const labels = JSON.parse(chartData.dataset.labels);
+    const values = JSON.parse(chartData.dataset.values);
+    console.log(chartData,labels,values);
+    
+
+
+
+
+
     const allDataButton = document.querySelector('#all-data-button');
     const newDataButton = document.querySelector('#new-data-button');
+    const updateDbButton = document.querySelector('#update-db-button');
     const ntable = document.querySelector('.new-data-table');
     const atable = document.querySelector('.all-data-table');
+    const updateTime = document.querySelector('#update-time');
 
     function toggleTables(showNew) {
         ntable.hidden = !showNew;
         atable.hidden = showNew;
+        updateTime.hidden = false;
         if(showNew == true){
             newDataButton.style.backgroundColor = 'silver';
             allDataButton.style.backgroundColor = '#FFFFFF';
@@ -75,6 +113,7 @@
         }
     }
 
+
     newDataButton.addEventListener('click', () => toggleTables(true));
     allDataButton.addEventListener('click', () => toggleTables(false));
 
@@ -82,7 +121,33 @@
 
 
 
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
 
+    // 指定图表的配置项和数据
+    var option = {
+    title: {
+        text: 'pm2.5數據柱狀圖'
+    },
+    tooltip: {},
+    legend: {
+        data: ['销量']
+    },
+    xAxis: {
+        data: labels
+    },
+    yAxis: {},
+    series: [
+        {
+        name: '销量',
+        type: 'bar',
+        data: values
+        }
+    ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
 
 
 
