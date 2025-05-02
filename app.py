@@ -9,20 +9,36 @@ nowtime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 app = Flask(__name__)
 
 
-@app.route("/filter")
+@app.route("/filter", methods=["POST"])
 def filter_data():
-    county = request.args.get("county")
+    county = request.form.get("county")
+    columns, datas1, datas2 = get_pm25_data_from_mysql()
+    df = pd.DataFrame(datas1,columns=columns)
+    df1 = df.groupby("county").get_group(county).groupby("site")["pm25"].mean()
+    print(df1)
     return {"county": county}
+
+
 
 @app.route("/")
 def index():
     columns, datas1, datas2 = get_pm25_data_from_mysql()
-    df1 = pd.DataFrame(datas1,columns=columns)
-    counties = sorted(df1['county'].unique().tolist())
+    df = pd.DataFrame(datas1,columns=columns)
+    counties = sorted(df['county'].unique().tolist())
     
+    county = request.args.get("county", "ALL")
+    if county == "ALL":
+        df1 = df.groupby("county")["pm25"].mean().reset_index()
+        x_data = df1['county'].to_list()
+    else:
+        print(df)
+        # 取得特定縣市的資料
+        df = df.groupby("county").get_group(county)
+        x_data = df['site'].to_list()
 
-    x_data = df1['site'].to_list()
-    y_data = df1['pm25'].to_list()
+    columns = df.columns.tolist()
+    datas = df.values.tolist()
+    y_data = df['pm25'].to_list()
 
 
     return render_template('index.html',
