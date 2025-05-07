@@ -25,43 +25,55 @@
     </select>
     <h2>選擇區域</h2>
     <select name="site" id="site">
-        <option value="板橋">板橋</option>
-        <option value="板橋2">板橋2</option>
-        <option value="板橋3">板橋3</option>
+
     </select><br><br>
     <div class="white-buttons"><button type="button" onclick="query()">查詢</button></div> 
+    <h2 id="serach-county">範例</h2>
     <div>
         <div id="main" style="width: 600px;height:400px; margin: 0px auto;"></div>
         <div id="chartData" data-labels='x_data' data-values='y_data'></div>
     </div>
+    <div id="pannel">
+        <h3>Higher:<span class="higher"></span>
+            <br>Lower:<span class="lower"></span></h3>
+    </div>
 
 
 
-
+    <a href="/">回首頁</a>
 
 <script>
     const countyEl = document.querySelector("#county");
-    const siteEl = document.querySelector("#site");
+    const siteEl = document.querySelector("#site");  
+  
 
-    countyEl.addEventListener("change",()=>{
+    updateSite();
+
+    function updateSite(){
         let county= countyEl.value;
+        let site = siteEl.value;
         const url = `/pm25-county-site?county=${county}`;
         //從後端要求資料
         fetch(url)
         .then(res=>res.json())
         .then(data=>{
-            console.log(data);
+           
+            console.log(data);          
+
             siteEl.innerHTML="";
             for(let i=0;i<data.length;i++){
                 const opt=document.createElement("option");
                 opt.value=data[i];
                 opt.textContent=data[i];
-                siteEl.appendChild(opt);
-            }
-
-            
+                siteEl.appendChild(opt);                
+            }         
             
         });
+        
+    }
+
+    countyEl.addEventListener("change",()=>{
+        updateSite()
 
     });
 
@@ -76,6 +88,15 @@
         .then(res=>res.json())
         .then(data=>{
             console.log(data);
+            document.querySelector('#serach-county').innerHTML=`${county}- ${site}`;
+            
+        
+            document.querySelector(".higher").innerHTML = data.higher;
+            document.querySelector(".lower").innerHTML = data.lower;
+            console.log(data.higher,data.lower);       
+            
+
+
             drawChart(chart1,data.site,data.x_data,data.y_data)
             
         });
@@ -86,25 +107,24 @@
     function drawChart(chart,site,labels,values){
         var option = {
         title: {
-            text: 'pm2.5數據柱狀圖'
+            text: ''
         },
         tooltip: {},
         legend: {
             data: ['PM25']
         },
         xAxis: {
+            type: 'category',
             data: labels
         },
-        dataZoom:[{
-            type:'slider',
-            start:0,
-            end:100
-        }],
-        yAxis: {},
+        yAxis: {
+            type: 'value'
+        },
         series: [
             {
             name: 'PM25',
-            type: 'bar',
+            type: 'line',
+            smooth: true,
             data: values
             }
         ]
