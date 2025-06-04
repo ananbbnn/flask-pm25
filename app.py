@@ -26,19 +26,9 @@ def index():
     df = pd.DataFrame(datas1,columns=columns)
     counties = sorted(df['county'].unique().tolist())
     
-    county = request.args.get("county", "ALL")
-    if county == "ALL":
-        df1 = df.groupby("county")["pm25"].mean().reset_index()
-        x_data = df1['county'].to_list()
-    else:
-        
-        # 取得特定縣市的資料
-        df = df.groupby("county").get_group(county)
-        x_data = df['site'].to_list()
 
-    columns = df.columns.tolist()
-    datas = df.values.tolist()
-    y_data = df['pm25'].to_list()
+    x_data = df1['site'].to_list()
+    y_data = df1['pm25'].to_list()
 
 
     return render_template('index.html',
